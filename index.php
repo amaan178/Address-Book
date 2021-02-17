@@ -70,12 +70,35 @@ include_once "./includes/functions.inc.php";
 
                 <tbody>
 <?php
-$sql = "SELECT * FROM contacts";
+//Handling the pagination
+if(isset($_GET['page']))
+{
+    $page = $_GET['page'];
+}
+else
+{
+    $page = 1;
+}
+$no_of_records_per_page = 5;
+
+$start = ($page - 1) * $no_of_records_per_page;
+
+$sql = "SELECT COUNT(*) AS total from contacts";
+$rows = db_select($sql);
+
+$total_rows = $rows[0]['total'];
+$total_pages = ceil($total_rows / $no_of_records_per_page);
+
+if($page > $total_pages || $page < 1)
+{
+    dd("404 PAGE NOT FOUND!");
+}
+$sql = "SELECT * FROM contacts LIMIT $start, $no_of_records_per_page";
 $rows = db_select($sql);
 if($rows === false)
 {
     $error = db_error();
-    die(var_dump($error));
+    dd($error);
 }
 foreach($rows as $row):
 ?>
@@ -94,6 +117,7 @@ foreach($rows as $row):
 endforeach;
 ?>
                 </tbody>
+
             </table>
         </div>
     </div>
@@ -102,13 +126,24 @@ endforeach;
     <div class="row">
         <div class="col s12">
             <ul class="pagination">
-                <li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
-                <li class="active"><a href="#!">1</a></li>
-                <li class="waves-effect"><a href="#!">2</a></li>
-                <li class="waves-effect"><a href="#!">3</a></li>
-                <li class="waves-effect"><a href="#!">4</a></li>
-                <li class="waves-effect"><a href="#!">5</a></li>
-                <li class="waves-effect"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
+                <li class="waves-effect <?= $page<=1 ? 'disabled' : '';?>">
+                    <a href="<?= $page <= 1 ? '#' : '?page=' .($page-1);?>">
+                        <i class="material-icons">chevron_left</i>
+                    </a>
+                </li>
+<?php
+for($i=1; $i<=$total_pages; $i++):
+?>
+                <li class="waves-effect <?=$i == $page ? 'active' : '';?>">
+                    <a href="index.php?page=<?=$i;?>"><?= $i; ?></a></li>
+<?php
+endfor;
+?>
+                <li class="waves-effect <?= $page<=$total_pages ? 'disabled' : '';?>">
+                    <a href="<?= $page <= $total_pages ? '#' : '?page=' .($page+1);?>">
+                        <i class="material-icons">chevron_right</i>
+                    </a>
+                </li>
             </ul>
         </div>
     </div>
