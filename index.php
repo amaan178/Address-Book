@@ -110,7 +110,7 @@ foreach($rows as $row):
                         <td><?= $row['telephone']; ?></td>
                         <td><?= $row['address']; ?></td>
                         <td><a class="btn btn-floating green lighten-2"><i class="material-icons">edit</i></a></td>
-                        <td><a class="btn btn-floating red lighten-2 modal-trigger" href="#deleteModal"><i class="material-icons">delete_forever</i></a>
+                        <td><a data-id="<?= $row['id']; ?>" class="btn btn-floating red lighten-2 modal-trigger delete-contact" href="#deleteModal"><i class="material-icons">delete_forever</i></a>
                         </td>
                     </tr>
 <?php
@@ -165,7 +165,7 @@ endfor;
         </div>
         <div class="modal-footer">
             <a href="#!" class="modal-close btn blue-grey lighten-2 waves-effect">Cancel</a>
-            <a href="#!" class="modal-close btn waves-effect red lighten-2">Agree</a>
+            <a href="#!" class="modal-close btn waves-effect red lighten-2" id="modal-agree-button">Agree</a>
         </div>
     </div>
     <!-- /Delete Modal Structure -->
@@ -177,6 +177,31 @@ endfor;
     <script src="js/pages/home.js"></script>
     <!--Custom JS-->
     <script src="js/custom.js" type="text/javascript"></script>
+
+    <script>
+<?php
+$q = '';
+$op = '';
+if(isset($_GET['q']))
+{
+    $q = $_GET['q'];
+}
+if(isset($_GET['op']))
+{
+    $op = $_GET['op'];
+}
+
+if($q == 'success' && $op == 'delete'):
+?>
+        var toastHTML = '<span class = "green darken-1">Contact delete successfully!</span>';
+        M.toast({
+            html : toastHTML,
+            classes : 'green darken-1'
+        });
+    </script>
 </body>
+<?php
+endif;
+?>
 
 </html>
