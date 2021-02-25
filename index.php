@@ -44,7 +44,7 @@ include_once "./includes/functions.inc.php";
     <!-- Add a New Contact Link-->
     <div class="row mt50">
         <div class="col s12 right-align">
-            <a class="btn waves-effect waves-light blue lighten-2" href="add-contact.html"><i
+            <a class="btn waves-effect waves-light blue lighten-2" href="add-contact.php"><i
                     class="material-icons left">add</i> Add
                 New</a>
         </div>
@@ -103,14 +103,17 @@ if($rows === false)
 foreach($rows as $row):
 ?>
                     <tr>
-                        <td><img class="circle" src="images/users/<?= $row['image_name']?>" alt="" height="60%"></td>
-                        <td><?= $row['first_name'] . " " . $row['last_name'];?></td>
-                        <td><?= $row['email']; ?></td>
-                        <td><?= $row['birthdate']; ?></td>
-                        <td><?= $row['telephone']; ?></td>
-                        <td><?= $row['address']; ?></td>
-                        <td><a class="btn btn-floating green lighten-2"><i class="material-icons">edit</i></a></td>
-                        <td><a data-id="<?= $row['id']; ?>" class="btn btn-floating red lighten-2 modal-trigger delete-contact" href="#deleteModal"><i class="material-icons">delete_forever</i></a>
+                        <td><img class="circle image-style" src="images/users/<?= $row['image_name']; ?>" alt="" height="60%"></td>
+                        <td><?= $row['first_name'] . " " .$row['last_name']; ?></td>
+                        <td><?= $row['email'];?></td>
+                        <td><?= $row['birthdate'];?></td>
+                        <td><?= $row['telephone'];?></td>
+                        <td><?= $row['address'];?></td>
+                        <td><a class="btn btn-floating green lighten-2" href="edit-contact.php?id=<?= $row['id'];?>"><i class="material-icons">edit</i></a></td>
+                        <td>
+                            <a data-id="<?= $row['id']; ?>" class="btn btn-floating red lighten-2 modal-trigger delete-contact" href="#deleteModal">
+                                <i class="material-icons">delete_forever</i>
+                            </a>
                         </td>
                     </tr>
 <?php

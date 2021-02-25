@@ -1,3 +1,59 @@
+<?php
+include_once 'includes/functions.inc.php';
+$error_flag = false;
+if(isset($_POST['action']))
+{
+    $first_name = sanitizeData($_POST['first_name']);
+    $last_name = sanitizeData($_POST['last_name']);
+    $email = sanitizeData($_POST['email']);
+    $birthdate = sanitizeData($_POST['birthdate']);
+    //convert the incoming string to date
+    $birthdate = date('Y-m-d',strtotime($birthdate));
+    $telephone = sanitizeData($_POST['telephone']);
+    $address = sanitizeData($_POST['address']);
+
+    $image_name = strtolower($first_name . "-" . $last_name);
+
+    $column_list = "first_name, last_name, email, birthdate,telephone,address";
+
+    $value_list = "'$first_name','$last_name', '$email' , '$birthdate', '$telephone', '$address'";
+
+    //Uploading Image
+    if($_FILES['pic']['name'])
+    {
+        $file_name = $_FILES['pic']['name'];
+        $tmp_file_location = $_FILES['pic']['tmp_name'];
+
+        // $type = $_FILES['pic']['type'];
+        // $file_size = $_FILES['pic']['size'];
+        
+        //Extracting the extension
+        $temp = explode('.' , $file_name);
+        $extension = strtolower(end($temp));
+        
+        $image_name .= "." . $extension;
+
+        // move_uploaded_file(source_path,destination_path)
+        move_uploaded_file($tmp_file_location,"images/users/$image_name");
+        $column_list .= ", image_name";
+        $value_list .= ", '$image_name'";
+
+        $query = "INSERT INTO contacts($column_list) VALUES ($value_list)";
+        $result = db_query($query);
+        if(!$result)
+        {
+            $error_flag = true;
+        }
+        else
+        {
+            header('Location: index.php?q=success&op=insert');
+        }
+    }
+
+}
+
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -43,34 +99,21 @@
         <div class="row mt50">
             <h2>Add New Contact</h2>
         </div>
+<?php
+if($error_flag):
+?>
         <div class="row">
-            <div class="materialert">
-                <i class="material-icons">check_circle</i> <span>Bienvenido, Linebeck</span>
-                <button type="button" class="close-alert">×</button>
-            </div>
-            <div class="materialert info">
-                <div class="material-icons">info_outline</div>
-                Oh! What a beautiful alert :)
-                <button type="button" class="close-alert">×</button>
-            </div>
             <div class="materialert error">
-                <div class="material-icons">error_outline</div>
-                Oh! What a beautiful alert :)
-                <button type="button" class="close-alert">×</button>
-            </div>
-            <div class="materialert success">
-                <div class="material-icons">check</div>
-                Oh! What a beautiful alert :)
-                <button type="button" class="close-alert">×</button>
-            </div>
-            <div class="materialert warning">
-                <div class="material-icons">warning</div>
-                Oh! What a beautiful alert :)
-                <button type="button" class="close-alert">×</button>
+                    <div class="material-icons">error_outline</div>
+                    There was some error while inserting records. If this occurs again please contact your administrator!
+                    <button type="button" class="close-alert">×</button>
             </div>
         </div>
+<?php
+endif;
+?>
         <div class="row">
-            <form class="col s12 formValidate" action="" id="add-contact-form" method="POST" enctype="multipart/form-data">
+            <form class="col s12 formValidate" action="<?=$_SERVER['PHP_SELF'];?>" id="add-contact-form" method="POST" enctype="multipart/form-data">
                 <div class="row mb10">
                     <div class="input-field col s6">
                         <input id="first_name" name="first_name" type="text" class="validate" data-error=".first_name_error">
@@ -130,7 +173,7 @@
     <footer class="page-footer p0">
         <div class="footer-copyright ">
             <div class="container">
-                <p class="center-align">© 2020 Study Link Classes</p>
+                <p class="center-align">©️ 2020 Study Link Classes</p>
             </div>
         </div>
     </footer>

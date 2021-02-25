@@ -44,6 +44,11 @@ function db_select($query)
     }
     return $rows;
 }
+function sanitizeData($data)
+{
+    $connection = db_connect();
+    return mysqli_real_escape_string($connection, $data);
+}
 function dd($var)
 {
     die(var_dump(($var)));
